@@ -111,7 +111,7 @@ export function Footer() {
               transition={{ delay: 0.6 }}
               className='text-xs text-muted-foreground text-center sm:text-left'
             >
-              © {new Date().getFullYear()} AI Arena. Powered by Mistral AI & Gemini.
+              © {new Date().getFullYear()} AI Arena. Built By Krish
             </motion.p>
 
             {/* Compact Links */}
