@@ -41,7 +41,7 @@ export function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
             whileHover={{ scale: 1.1, y: -2 }}
-            href='https://github.com'
+            href='https://github.com/Krish91113/Ai-arena-deployment'
             target='_blank'
             rel='noopener noreferrer'
             className='bg-card w-12 h-12 sm:w-14 sm:h-14 grid place-content-center rounded-xl group transition-all hover:bg-card/90'
@@ -69,7 +69,7 @@ export function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             whileHover={{ scale: 1.1, y: -2 }}
-            href='https://linkedin.com'
+            href='https://www.linkedin.com/in/krish9113/'
             target='_blank'
             rel='noopener noreferrer'
             className='bg-card w-12 h-12 sm:w-14 sm:h-14 grid place-content-center rounded-xl group transition-all hover:bg-card/90'
