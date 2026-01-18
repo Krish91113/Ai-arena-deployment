@@ -20,7 +20,9 @@ backend/Tri2/Tri2/test_gemini_names.py
 backend/Tri2/Tri2/test_gemini_direct.py
 
 # Test output files that may contain sensitive data
-backend/Tri2/Tri2/test_output.txt
+backend/Tri2/Tri2/test_output*.txt
+backend/Tri2/Tri2/test_live_output*.txt
+backend/Tri2/Tri2/models_list*.txt
 backend/Tri2/Tri2/gemini_test_result.txt
 backend/Tri2/Tri2/data/
 

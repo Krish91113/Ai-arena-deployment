@@ -39,8 +39,14 @@ COUNCIL_MODELS_OPENROUTER = [
     "gryphe/mythomax-l2-13b:free",
 ]
 
-# Use Gemini if API key is available, otherwise try OpenRouter
-if GOOGLE_API_KEY:
+# Use both if available (Primary Goal: Diversity)
+if GOOGLE_API_KEY and OPENROUTER_API_KEY:
+    # Agent A: OpenAI (via OpenRouter)
+    # Agent B: Gemini (via Google)
+    COUNCIL_MODELS = ["openai/gpt-3.5-turbo", "gemini-1.5-flash"]
+    USE_GEMINI = True # Keep using Gemini for chairman
+    print("✅ Using Hybrid Council: OpenAI (A) + Gemini (B)")
+elif GOOGLE_API_KEY:
     COUNCIL_MODELS = COUNCIL_MODELS_GEMINI
     USE_GEMINI = True
     print("✅ Using Google Gemini API (free, instant activation)")

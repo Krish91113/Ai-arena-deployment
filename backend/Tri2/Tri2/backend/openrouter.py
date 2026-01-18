@@ -28,44 +28,57 @@ async def query_gemini_model(
     """
     print(f"DEBUG: Querying Gemini model {model} with {len(messages)} messages")
     
-    try:
-        # Initialize the model
-        gemini_model = genai.GenerativeModel(model)
-        
-        # Convert messages to Gemini format with formatting instructions
-        user_messages = [m for m in messages if m['role'] == 'user']
-        if user_messages:
-            # Add formatting instructions to ensure well-structured output
-            original_content = user_messages[-1]['content']
-            enhanced_prompt = f"""{original_content}
-
-Please provide a well-structured response with:
-- Clear paragraphs separated by blank lines
-- Proper headings using markdown (## for main sections)
-- Bullet points or numbered lists where appropriate
-- Code blocks with ``` if showing code
-- Proper spacing for readability
-
-Format your response in clean, readable markdown."""
+    import asyncio
+    
+    retries = 3
+    base_delay = 2
+    
+    for attempt in range(retries + 1):
+        try:
+            # Initialize the model
+            gemini_model = genai.GenerativeModel(model)
             
-            prompt = enhanced_prompt
-        else:
-            prompt = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
-        
-        # Generate response
-        response = gemini_model.generate_content(prompt)
-        
-        # Extract text from response - preserve all formatting
-        response_text = response.text if hasattr(response, 'text') else str(response)
-        
-        return {
-            'content': response_text,
-            'model': model
-        }
-        
-    except Exception as e:
-        print(f"Error querying Gemini model {model}: {e}")
-        return None
+            # Convert messages to Gemini format with formatting instructions
+            user_messages = [m for m in messages if m['role'] == 'user']
+            if user_messages:
+                # Add formatting instructions to ensure well-structured output
+                original_content = user_messages[-1]['content']
+                enhanced_prompt = f"""{original_content}
+
+ Please provide a well-structured response with:
+ - Clear paragraphs separated by blank lines
+ - Proper headings using markdown (## for main sections)
+ - Bullet points or numbered lists where appropriate
+ - Code blocks with ``` if showing code
+ - Proper spacing for readability
+
+ Format your response in clean, readable markdown."""
+                
+                prompt = enhanced_prompt
+            else:
+                prompt = "\n".join([f"{m['role']}: {m['content']}" for m in messages])
+            
+            # Generate response
+            response = await gemini_model.generate_content_async(prompt)
+            
+            # Extract text from response - preserve all formatting
+            response_text = response.text if hasattr(response, 'text') else str(response)
+            
+            return {
+                'content': response_text,
+                'model': model
+            }
+            
+        except Exception as e:
+            error_str = str(e)
+            if "429" in error_str and attempt < retries:
+                delay = base_delay * (2 ** attempt)
+                print(f"⚠️ Gemini Rate Limit (429). Retrying in {delay}s... (Attempt {attempt+1}/{retries})")
+                await asyncio.sleep(delay)
+                continue
+            
+            print(f"Error querying Gemini model {model}: {e}")
+            return None
 
 
 async def query_openrouter_model(

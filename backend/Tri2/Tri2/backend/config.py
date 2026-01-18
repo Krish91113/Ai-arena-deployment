@@ -32,31 +32,35 @@ USE_OPENROUTER = bool(OPENROUTER_API_KEY)
 # Agent A: Mistral AI (OpenRouter - FREE)
 # Agent B: Gemini (Google - FREE)
 # Referee: Gemini (Google - FREE) - judges which answer is best
+# Council members - HYBRID setup: OpenAI vs Gemini
+# Agent A: OpenAI GPT-3.5 (OpenRouter)
+# Agent B: Gemini (Google)
+# Referee: Gemini (Google)
 if USE_GEMINI and USE_OPENROUTER:
     COUNCIL_MODELS = [
-        "mistralai/mistral-7b-instruct:free",     # Mistral AI (free) - Agent A
-        "gemini-pro",                             # Google Gemini (free) - Agent B
+        "openai/gpt-3.5-turbo",                   # Agent A
+        "gemini-flash-latest",                    # Agent B
     ]
-    CHAIRMAN_MODEL = "gemini-pro"                 # Gemini as referee (free)
-    print("[OK] Using HYBRID setup: Mistral vs Gemini (Gemini judges)")
+    CHAIRMAN_MODEL = "gemini-flash-latest"        # Referee
+    print("[OK] Using HYBRID setup: OpenAI vs Gemini (Gemini judges)")
     print(f"    Agent A: {COUNCIL_MODELS[0]}")
     print(f"    Agent B: {COUNCIL_MODELS[1]}")
     print(f"    Referee: {CHAIRMAN_MODEL}")
 elif USE_OPENROUTER:
     # OpenRouter only
     COUNCIL_MODELS = [
-        "mistralai/mistral-7b-instruct:free",
-        "qwen/qwen-2-7b-instruct:free",
+        "openai/gpt-3.5-turbo",
+        "openai/gpt-3.5-turbo",
     ]
-    CHAIRMAN_MODEL = "meta-llama/llama-3.1-8b-instruct:free"
-    print("[OK] Using OpenRouter with FREE models")
+    CHAIRMAN_MODEL = "openai/gpt-3.5-turbo"
+    print("[OK] Using OpenRouter only")
 elif USE_GEMINI:
     # Gemini only
     COUNCIL_MODELS = [
-        "gemini-pro",
-        "gemini-pro",
+        "gemini-2.0-flash",
+        "gemini-2.0-flash",
     ]
-    CHAIRMAN_MODEL = "gemini-pro"
+    CHAIRMAN_MODEL = "gemini-2.0-flash"
     print("[OK] Using Google Gemini API (free)")
 else:
     # No API keys available

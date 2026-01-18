@@ -184,8 +184,27 @@ async def ask_question(request: AskRequest):
         }
 
     # Ensure two agents; if only one, duplicate to keep UI stable
+    # Ensure two agents; if only one, duplicate to keep UI stable
     if len(top_two) == 1 and stage1_results:
-        top_two.append(top_two[0])
+        # Instead of duplicating, try to show that one failed
+        # Check which one is missing
+        present_model = top_two[0]
+        missing_model = "Unknown Agent"
+        
+        # Find what the other configured model SHOULD be
+        from .config import COUNCIL_MODELS
+        for m in COUNCIL_MODELS:
+            if m != present_model:
+                missing_model = m
+                break
+        
+        top_two.append(missing_model)
+        
+        # Add a placeholder result for the missing model
+        stage1_results.append({
+            "model": missing_model,
+            "response": f"⚠️ Error: Agent {missing_model} failed to respond (likely due to API rate limits or connection issues). Please try again."
+        })
 
     agent_a_model = top_two[0]
     agent_b_model = top_two[1] if len(top_two) > 1 else top_two[0]
